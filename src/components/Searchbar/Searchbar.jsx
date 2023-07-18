@@ -1,4 +1,6 @@
+import PropTypes from "prop-types";
 import { Component } from 'react';
+import css from '../Searchbar/Searchbar.module.css'
 
 export class Searchbar extends Component {
   state = {
@@ -18,13 +20,14 @@ export class Searchbar extends Component {
 
   render() {
     return (
-      <header>
-        <form onSubmit={this.handleSubmit}>
-          <button type="submit">
-            <span>Search</span>
+      <header className={css.Searchbar}>
+        <form className={css.SearchForm} onSubmit={this.handleSubmit}>
+          <button className={css.SearchFormButton} type="submit">
+            <span className={css.SearchFormButtonLabel}>Search</span>
           </button>
 
-          <input
+          <input 
+            className={css.SearchFormInput}
             type="text"
             autoComplete="off"
             autoFocus
@@ -37,3 +40,11 @@ export class Searchbar extends Component {
     );
   }
 }
+
+
+
+Searchbar.propTypes = {
+  value:  PropTypes.string,
+  onSubmit:PropTypes.func.isRequired
+};
+

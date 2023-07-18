@@ -8,18 +8,23 @@ import { Button } from './Button/Button';
 export class App extends Component {
   state = {
     searchValue: '',
-    page: 1,
+    page: '',
     data: [],
     showModal: false,
     selectedImage: null,
     total: 0,
+    loading: false,
   };
+
+ 
 
   componentDidUpdate(prevProps, prevState) {
     const prevSearch = prevState.searchValue;
     const nextSearch = this.state.searchValue;
 
     if (prevSearch !== nextSearch || this.state.page !== prevState.page) {
+      this.setState({ loading: true });
+
       fetch(
         `https://pixabay.com/api/?key=36761319-d149b7033a361911a7c88355b&q=${nextSearch}&image_type=photo&per_page=12&page=${this.state.page}&orientation=horizontal&safesearch=true`
       )
@@ -42,6 +47,8 @@ export class App extends Component {
           });
         })
 
+        .finally(() => this.setState({ loading: false }))
+
         .catch(error => {
           console.log('error');
         });
@@ -53,7 +60,7 @@ export class App extends Component {
   };
 
   closeModal = showModal => {
-    this.setState({ showModal: !showModal });
+    this.setState({ showModal: false });
   };
 
   openModal = src => {
@@ -64,27 +71,33 @@ export class App extends Component {
   };
 
   handleValueSubmit = searchValue => {
-    this.setState({ searchValue, data: [] });
+    this.setState({ searchValue, data: [], page: 1 });
   };
 
   render() {
     return (
       <>
         <Searchbar 
-          onSubmit={this.handleValueSubmit} />
+          onSubmit={this.handleValueSubmit} 
+        />
         <ImageGallery 
           data={this.state.data} 
-          openModal={this.openModal} />
-        <Loader />
+          openModal={this.openModal} 
+        />
+
+        {this.state.loading && 
+          <Loader />
+        }
 
         {this.state.data.length !== 0 &&
           this.state.total > this.state.data.length && (
             <Button 
-              onClick={this.handleButtoChange} />
-          )}
+              onClick={this.handleButtoChange} 
+            />
+        )}
         {this.state.showModal && (
           <Modal
-            closeModal={this.closeModal}
+            onClose={this.closeModal}
             selectedImage={this.state.selectedImage}
           />
         )}
