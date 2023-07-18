@@ -21,6 +21,9 @@ export class App extends Component {
   componentDidUpdate(prevProps, prevState) {
     const prevSearch = prevState.searchValue;
     const nextSearch = this.state.searchValue;
+    if(this.state.searchValue.length === 0) {
+      return alert('Please fill in the input field')
+    }
 
     if (prevSearch !== nextSearch || this.state.page !== prevState.page) {
       this.setState({ loading: true });
